@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { EOptions, type TAccount } from '@/types/types'
+import { type TAccount } from '@/types/accType'
+import { EOptions } from '@/constants/account'
 import DeleteIcon from './icons/DeleteIcon.vue'
 import { NFormItem, NInput, NSelect, NButton, NIcon, NFlex } from 'naive-ui'
 import MarkInput from './MarkInput.vue'
@@ -68,5 +69,3 @@ const onUpdate = () => {
     </n-button>
   </n-flex>
 </template>
-
-<style scoped></style>

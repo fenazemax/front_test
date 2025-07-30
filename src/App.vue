@@ -10,5 +10,3 @@ import { NMessageProvider } from 'naive-ui'
     </n-message-provider>
   </main>
 </template>
-
-<style scoped></style>

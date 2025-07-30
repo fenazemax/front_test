@@ -1,7 +1,4 @@
-export enum EOptions {
-  'LDAP' = 'LDAP',
-  'Local' = 'Локальная',
-}
+import { EOptions } from '@/constants/account'
 
 export type TAccount = {
   id: number

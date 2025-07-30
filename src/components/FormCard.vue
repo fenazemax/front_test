@@ -1,43 +1,39 @@
 <script setup lang="ts">
-import { useAccStore } from '@/stores/accountStore'
+import { useAccStore } from '@/store/accountStore'
 import FormHead from './FormHead.vue'
-import { EOptions, type TAccount } from '@/types/types'
+import { type TAccount } from '@/types/accType'
+import { EOptions } from '@/constants/account'
 import { computed, ref } from 'vue'
 import { NFlex, useMessage, NForm } from 'naive-ui'
 import FormMain from './FormMain.vue'
+import type { TError } from '@/types/errType'
 
 const accStore = useAccStore()
 const message = useMessage()
+
 const allAccounts = computed(() => accStore.accounts)
-const errorsMap = ref<Record<number, { login?: boolean; password?: boolean }>>({})
+
+const errorsMap = ref<TError>({})
+
 const handleAdd = () => {
-  try {
-    const newAcc: TAccount = {
-      id: Date.now(),
-      accType: EOptions.Local,
-      login: '',
-      password: '',
-      mark: [],
-    }
-    accStore.addAccount(newAcc)
-    message.success('Учетная запись создана')
-  } catch (error) {
-    message.info('Учетная запись не создалась')
-    throw error
+  const newAcc: TAccount = {
+    id: Date.now(),
+    accType: EOptions.Local,
+    login: '',
+    password: '',
+    mark: [],
   }
+  accStore.addAccount(newAcc)
+  message.success('Учетная запись создана')
 }
-const deleteAcc = (acc: TAccount) => {
-  try {
-    accStore.deleteAccount(acc.id)
-    message.warning('Учетная запись удалена')
-  } catch (error) {
-    message.info('Учетная запись не удалилась, возникла ошибка')
-    throw error
-  }
+
+const deleteAcc = (id: number) => {
+  accStore.deleteAccount(id)
+  message.warning('Учетная запись удалена')
 }
 
 const validateAndUpdate = (acc: TAccount) => {
-  const password = acc.accType === EOptions.Local ? acc.password?.trim() || '' : null
+  const password = acc.accType === EOptions.Local ? (acc.password?.trim() ?? '') : null
   const errors = {
     login: !acc.login.trim(),
     password: acc.accType === EOptions.Local ? !password : false,
@@ -51,15 +47,12 @@ const validateAndUpdate = (acc: TAccount) => {
   }
 
   accStore.updateAccount({ ...acc, password })
-  console.log(accStore.accounts)
 }
 </script>
 
 <template>
-  <div class="form" style="padding: 50px">
-    <div class="form__head">
-      <FormHead @add="handleAdd" />
-    </div>
+  <div class="form">
+    <FormHead @add="handleAdd" />
     <n-flex vertical>
       <n-form>
         <FormMain
@@ -67,7 +60,7 @@ const validateAndUpdate = (acc: TAccount) => {
           :key="acc.id"
           :account="acc"
           @update="validateAndUpdate"
-          @delete="deleteAcc"
+          @delete="deleteAcc(acc.id)"
           :errors="errorsMap[acc.id]"
         />
       </n-form>
@@ -75,4 +68,8 @@ const validateAndUpdate = (acc: TAccount) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.form {
+  padding: 50px;
+}
+</style>

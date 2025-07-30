@@ -10,7 +10,7 @@ const emit = defineEmits<{
 
 <template>
   <n-flex vertical>
-    <n-flex style="align-items: center; gap: 20px">
+    <n-flex>
       <h1 class="form__title">Учетные записи</h1>
       <n-button @click="emit('add')" size="medium">
         <template #icon>
@@ -42,5 +42,9 @@ const emit = defineEmits<{
   padding: 10px;
   border-radius: 20px;
   background-color: aliceblue;
+}
+.align-gap {
+  align-items: center;
+  gap: 20px;
 }
 </style>
