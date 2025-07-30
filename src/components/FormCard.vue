@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useAccStore } from '@/store/accountStore'
 import FormHead from './FormHead.vue'
-import { type TAccount } from '@/types/accType'
+import { type TAccount } from '@/types/account'
 import { EOptions } from '@/constants/account'
 import { computed, ref } from 'vue'
 import { NFlex, useMessage, NForm } from 'naive-ui'
 import FormMain from './FormMain.vue'
-import type { TError } from '@/types/errType'
+import type { TCredentials, TError } from '@/types/error'
+import { createNewAccount } from '@/utils/createNewAccount'
 
 const accStore = useAccStore()
 const message = useMessage()
@@ -16,25 +17,18 @@ const allAccounts = computed(() => accStore.accounts)
 const errorsMap = ref<TError>({})
 
 const handleAdd = () => {
-  const newAcc: TAccount = {
-    id: Date.now(),
-    accType: EOptions.Local,
-    login: '',
-    password: '',
-    mark: [],
-  }
-  accStore.addAccount(newAcc)
+  accStore.addAccount(createNewAccount())
   message.success('Учетная запись создана')
 }
 
-const deleteAcc = (id: number) => {
+const handleDelete = (id: number) => {
   accStore.deleteAccount(id)
   message.warning('Учетная запись удалена')
 }
 
-const validateAndUpdate = (acc: TAccount) => {
+const handleUpdate = (acc: TAccount) => {
   const password = acc.accType === EOptions.Local ? (acc.password?.trim() ?? '') : null
-  const errors = {
+  const errors: TCredentials = {
     login: !acc.login.trim(),
     password: acc.accType === EOptions.Local ? !password : false,
   }
@@ -59,8 +53,8 @@ const validateAndUpdate = (acc: TAccount) => {
           v-for="acc in allAccounts"
           :key="acc.id"
           :account="acc"
-          @update="validateAndUpdate"
-          @delete="deleteAcc(acc.id)"
+          @update="handleUpdate"
+          @delete="handleDelete(acc.id)"
           :errors="errorsMap[acc.id]"
         />
       </n-form>

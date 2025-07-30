@@ -1,5 +1,5 @@
 import { STORE_NAME } from './constants/names'
-import type { TAccount } from '@/types/accType'
+import type { TAccount } from '@/types/account'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 

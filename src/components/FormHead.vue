@@ -10,7 +10,7 @@ const emit = defineEmits<{
 
 <template>
   <n-flex vertical>
-    <n-flex>
+    <n-flex align="center">
       <h1 class="form__title">Учетные записи</h1>
       <n-button @click="emit('add')" size="medium">
         <template #icon>

@@ -1,23 +1,22 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { NInput } from 'naive-ui'
+import { formatInputText } from '@/utils/formatInputText'
+import type { TMark } from '@/types/account'
+import { separateMarks } from '@/utils/separateInputMarks'
 
 const props = defineProps<{
-  modelValue: Array<{ text: string }>
+  modelValue: TMark
 }>()
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: Array<{ text: string }>): void
+  (e: 'update:modelValue', value: TMark): void
   (e: 'blur'): void
 }>()
 
 const inputText = ref('')
 
 const parseAndEmit = (val: string) => {
-  const parsed = val
-    .split(/[\s;]+/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .map((text) => ({ text }))
+  const parsed = formatInputText(val)
 
   emit('update:modelValue', parsed)
 }
@@ -28,15 +27,14 @@ const onInput = (val: string) => {
 
 const onBlur = () => {
   parseAndEmit(inputText.value)
-  inputText.value =
-    props.modelValue.map((m) => m.text).join('; ') + (props.modelValue.length ? '; ' : '')
+  inputText.value = separateMarks(props.modelValue)
   emit('blur')
 }
 
 watch(
   () => props.modelValue,
-  (val) => {
-    inputText.value = val.map((m) => m.text).join('; ') + (val.length ? '; ' : '')
+  (value) => {
+    inputText.value = separateMarks(value)
   },
   { immediate: true },
 )
